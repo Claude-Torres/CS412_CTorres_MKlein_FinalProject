@@ -2,10 +2,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import static java.lang.System.exit;
+
 public class Game {
     char squares[] = new char[9];
     char currentPlayer;
     char gameStatus;
+    User user;
 
     Game() {
         for(int i = 0; i < 9; i++){
@@ -142,14 +145,50 @@ public class Game {
 
     public static void main(String[] args) {
         Game game = new Game();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String inputHost = null;
+
+        System.out.println("Would you like to host the game? (leave blank for no): ");
+        try {
+            inputHost = reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(inputHost.length() != 0)
+            game.user = new Host();
+
+        else
+            game.user = new Player();
+
 
         int moveInt = 0;
         String sMove = "-1";
         String moveInput;
-        StringBuilder moveInputBuilder = new StringBuilder("nnnnnnnnn");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String incomingData = "";
+        StringBuilder incomingDataBuilder = new StringBuilder("");
+        StringBuilder data = new StringBuilder("");
+        StringBuilder moveInputBuilder;
 
         while (game.getGameStatus() == 'n') {
+            if((game.user.getIsHost() && game.getCurrentPlayer() != 'x') || (game.user.getIsHost() == false && game.getCurrentPlayer() != 'o')){
+                // if not your turn
+                incomingDataBuilder = new StringBuilder("");
+
+                System.out.println("Waiting For Other Player...");
+                incomingData = game.user.waitForData();
+
+                for(int i = 1; i < 10; i++){
+                    incomingDataBuilder.append(incomingData.charAt(i));
+                }
+
+                game.setCurrentPlayer(incomingData.charAt(0));
+                game.setSquares(incomingDataBuilder.toString());
+                game.setGameStatus();
+
+                continue;
+            }
+            data = new StringBuilder("");
             moveInputBuilder = new StringBuilder("");
             moveInputBuilder.append(game.getSquares());
 
@@ -179,6 +218,26 @@ public class Game {
 
                     game.setSquares(moveInput);
                     game.setGameStatus();
+
+                    // change turns
+                    if (game.getCurrentPlayer() == 'x')
+                        game.setCurrentPlayer('o');
+                    else
+                        game.setCurrentPlayer('x');
+
+                    if(!game.user.isSocketActive()){
+                        System.out.println("Other Player Has Disconnected!\nExiting...");
+                        exit(1);
+                    }
+
+                    // make data string
+                    data.append(game.getCurrentPlayer());
+                    data.append(game.getSquares());
+
+                    // send data string
+                    game.user.sendData(data.toString());
+
+                    // if game is over
                     if(game.getGameStatus() != 'n'){
                         break;
                     }
@@ -189,11 +248,7 @@ public class Game {
                     continue;
                 }
 
-                // change turns
-                if (game.getCurrentPlayer() == 'x')
-                    game.setCurrentPlayer('o');
-                else
-                    game.setCurrentPlayer('x');
+
             }
             else {
                 System.out.println("Incorrect Input!");
