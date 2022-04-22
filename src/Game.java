@@ -1,3 +1,5 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,6 +11,9 @@ public class Game {
     char currentPlayer;
     char gameStatus;
     User user;
+    View view;
+    boolean gameStarted;
+    static Game game;
 
     Game() {
         for(int i = 0; i < 9; i++){
@@ -17,6 +22,11 @@ public class Game {
 
         currentPlayer = 'x';
         gameStatus = 'n';
+
+        view = new View();
+
+        view.setJoinButtonActionListener(new JoinButtonActionListener());
+        view.setHostButtonActionListener(new HostButtonActionListener());
     }
 
     String getSquares(){
@@ -128,6 +138,75 @@ public class Game {
         return squares[x] == 'n';
     }
 
+    class OneButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+    class TwoButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+    class ThreeButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+    class FourButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+    class FiveButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+    class SixButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+    class SevenButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+    class EightButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+    class NineButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+    class HostButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            game.user = new Host();
+            game.gameStarted = true;
+        }
+    }
+    class JoinButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            game.user = new Player();
+            game.gameStarted = true;
+        }
+    }
+
     void displayGameBoard(){
         StringBuilder moveInputBuilder = new StringBuilder(getSquares());
 
@@ -144,22 +223,31 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        Game game = new Game();
+        game = new Game();
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String inputHost = null;
 
-        System.out.println("Would you like to host the game? (leave blank for no): ");
-        try {
-            inputHost = reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        if(inputHost.length() != 0)
-            game.user = new Host();
 
-        else
-            game.user = new Player();
+        while(1 == 1){
+            if(game.gameStarted)
+                break;
+        };
+
+        System.out.println("User successfully chose!");
+
+//        System.out.println("Would you like to host the game? (leave blank for no): ");
+//        try {
+//            inputHost = reader.readLine();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        if(inputHost.length() != 0)
+//            game.user = new Host();
+//
+//        else
+//            game.user = new Player();
 
 
         int moveInt = 0;
@@ -271,5 +359,3 @@ public class Game {
     }
 
 }
-
-

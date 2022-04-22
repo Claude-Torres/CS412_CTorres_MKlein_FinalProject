@@ -13,7 +13,7 @@ public class Player extends User{
         isHost = false;
         boolean connected = false;
 
-        while(1==1) {
+
             try {
                 System.out.println("Player> Attempting to connect...");
                 socket = new Socket("127.0.0.1", 5000);
@@ -21,15 +21,10 @@ public class Player extends User{
 
                 bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 printWriter = new PrintWriter(socket.getOutputStream());
-                break;
+
             } catch (IOException e) {
-                System.out.println("No host to connect to.\nTrying again...");
-                try {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
+                System.out.println("No host to connect to.\n");
+                exit(1);
             }
-        }
     }
 }
