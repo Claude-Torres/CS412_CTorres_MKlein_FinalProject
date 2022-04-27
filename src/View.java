@@ -43,8 +43,6 @@ public class View {
         title.setBounds(335, 30, size.width +50, size.height);
         panel.add(title);
 
-
-
         frame.getContentPane().add(panel);
 
         frame.setSize(800, 800);

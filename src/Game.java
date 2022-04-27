@@ -5,15 +5,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import static java.lang.System.exit;
+import static java.lang.Thread.sleep;
 
 public class Game {
     char squares[] = new char[9];
     char currentPlayer;
     char gameStatus;
     User user;
-    View view;
+    static char isHosting = 'u';
+
     boolean gameStarted;
-    static Game game;
+    //Game game;
 
     Game() {
         for(int i = 0; i < 9; i++){
@@ -23,7 +25,7 @@ public class Game {
         currentPlayer = 'x';
         gameStatus = 'n';
 
-        view = new View();
+        View view = new View();
 
         view.setJoinButtonActionListener(new JoinButtonActionListener());
         view.setHostButtonActionListener(new HostButtonActionListener());
@@ -195,15 +197,18 @@ public class Game {
     class HostButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            game.user = new Host();
-            game.gameStarted = true;
+            isHosting = 'y';
+//            user = new Host();
+//            gameStarted = true;
         }
     }
     class JoinButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            game.user = new Player();
-            game.gameStarted = true;
+
+            isHosting = 'n';
+//            user = new Player();
+//            gameStarted = true;
         }
     }
 
@@ -223,31 +228,26 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        game = new Game();
+        Game game = new Game();
+
+        while (isHosting == 'u') {
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String inputHost = null;
 
 
 
-        while(1 == 1){
-            if(game.gameStarted)
-                break;
-        };
-
-        System.out.println("User successfully chose!");
-
-//        System.out.println("Would you like to host the game? (leave blank for no): ");
-//        try {
-//            inputHost = reader.readLine();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        if(inputHost.length() != 0)
-//            game.user = new Host();
-//
-//        else
-//            game.user = new Player();
+        if (isHosting == 'y'){
+            game.user = new Host();
+        }
+        else {
+            game.user = new Player();
+        }
 
 
         int moveInt = 0;

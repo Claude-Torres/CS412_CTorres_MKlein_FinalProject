@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 
 import static java.lang.System.exit;
 
-public class User extends Game{
+public class User{
 
     boolean isHost;
     public java.net.Socket socket;
