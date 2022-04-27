@@ -1,21 +1,19 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
+import static java.lang.Character.toUpperCase;
 import static java.lang.System.exit;
 import static java.lang.Thread.sleep;
 
+@SuppressWarnings({"BusyWait"})
 public class Game {
-    char squares[] = new char[9];
+    char[] squares = new char[9];
     char currentPlayer;
     char gameStatus;
     User user;
     static char isHosting = 'u';
-
-    boolean gameStarted;
-    //Game game;
+    View view;
+    static int move = -1;
 
     Game() {
         for(int i = 0; i < 9; i++){
@@ -25,18 +23,27 @@ public class Game {
         currentPlayer = 'x';
         gameStatus = 'n';
 
-        View view = new View();
+        view = new View();
 
         view.setJoinButtonActionListener(new JoinButtonActionListener());
         view.setHostButtonActionListener(new HostButtonActionListener());
+        view.setOneButtonActionListener(new OneButtonActionListener());
+        view.setTwoButtonActionListener(new TwoButtonActionListener());
+        view.setThreeButtonActionListener(new ThreeButtonActionListener());
+        view.setFourButtonActionListener(new FourButtonActionListener());
+        view.setFiveButtonActionListener(new FiveButtonActionListener());
+        view.setSixButtonActionListener(new SixButtonActionListener());
+        view.setSevenButtonActionListener(new SevenButtonActionListener());
+        view.setEightButtonActionListener(new EightButtonActionListener());
+        view.setNineButtonActionListener(new NineButtonActionListener());
     }
 
     String getSquares(){
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (int i = 0; i < 9; i++){
-            s = s + squares[i];
+            s.append(squares[i]);
         }
-        return s;
+        return s.toString();
     }
 
     void setSquares(String s){
@@ -60,73 +67,69 @@ public class Game {
     void setGameStatus(){
         char winner = 'n';
         int count = 0;
+
+
+        if(squares[1] == squares[0] && squares[2] == squares[0] && squares[0] != 'n'){
+            // top row win
+            winner = squares[0];
+            squares[0] = toUpperCase(squares[0]);
+            squares[1] = toUpperCase(squares[0]);
+            squares[2] = toUpperCase(squares[0]);
+        }
+        if(squares[3] == squares[0] && squares[6] == squares[0] && squares[0] != 'n'){
+            // left column win
+            winner = squares[0];
+            squares[0] = toUpperCase(squares[0]);
+            squares[3] = toUpperCase(squares[0]);
+            squares[6] = toUpperCase(squares[0]);
+        }
+        if(squares[4] == squares[0] && squares[8] == squares[0] && squares[0] != 'n'){
+            // left diagonal win
+            winner = squares[0];
+            squares[0] = toUpperCase(squares[0]);
+            squares[4] = toUpperCase(squares[0]);
+            squares[8] = toUpperCase(squares[0]);
+        }
+        if(squares[4] == squares[1] && squares[7] == squares[1] && squares[1] != 'n'){
+            // middle column win
+            winner = squares[1];
+            squares[1] = toUpperCase(squares[1]);
+            squares[4] = toUpperCase(squares[1]);
+            squares[7] = toUpperCase(squares[1]);
+        }
+        if(squares[5] == squares[2] && squares[8] == squares[2] && squares[2] != 'n'){
+            // right column win
+            winner = squares[2];
+            squares[2] = toUpperCase(squares[2]);
+            squares[5] = toUpperCase(squares[2]);
+            squares[8] = toUpperCase(squares[2]);
+        }
+        if(squares[4] == squares[2] && squares[6] == squares[2] && squares[2] != 'n'){
+            // right diagonal win
+            winner = squares[2];
+            squares[2] = toUpperCase(squares[2]);
+            squares[4] = toUpperCase(squares[2]);
+            squares[6] = toUpperCase(squares[2]);
+        }
+        if(squares[4] == squares[3] && squares[5] == squares[3] && squares[3] != 'n'){
+            // middle row win
+            winner = squares[3];
+            squares[3] = toUpperCase(squares[3]);
+            squares[4] = toUpperCase(squares[3]);
+            squares[5] = toUpperCase(squares[3]);
+        }
+        if(squares[7] == squares[6] && squares[8] == squares[6] && squares[6] != 'n'){
+            // bottom row win
+            winner = squares[6];
+            squares[6] = toUpperCase(squares[6]);
+            squares[7] = toUpperCase(squares[6]);
+            squares[8] = toUpperCase(squares[6]);
+        }
+
         for(int i = 0; i < 9; i++){
             // check each square
             if(squares[i] != 'n'){
                 count ++;
-                // if something is in the square
-                if(i == 0){
-                    if(squares[1] == squares[0] && squares[2] == squares[0]){
-                        // top row win
-                        winner = squares[0];
-                    }
-                    if(squares[3] == squares[0] && squares[6] == squares[0]){
-                        // left column win
-                        winner = squares[0];
-                    }
-                    if(squares[4] == squares[0] && squares[8] == squares[0]){
-                        // left diagonal win
-                        winner = squares[0];
-                    }
-                }
-                else if(i == 1){
-                    if(squares[0] == squares[1] && squares[2] == squares[1]){
-                        // top row win
-                        winner = squares[1];
-                    }
-                    if(squares[4] == squares[1] && squares[7] == squares[1]){
-                        // middle column win
-                        winner = squares[1];
-                    }
-                }
-                else if(i == 2){
-                    if(squares[0] == squares[2] && squares[1] == squares[2]){
-                        // top row win
-                        winner = squares[2];
-                    }
-                    if(squares[5] == squares[2] && squares[8] == squares[2]){
-                        // right column win
-                        winner = squares[2];
-                    }
-                    if(squares[4] == squares[2] && squares[6] == squares[2]){
-                        // right diagonal win
-                        winner = squares[2];
-                    }
-                }
-                else if(i == 3){
-                    if(squares[4] == squares[3] && squares[5] == squares[3]){
-                        // middle row win
-                        winner = squares[3];
-                    }
-                    if(squares[0] == squares[3] && squares[6] == squares[3]){
-                        // left column win
-                        winner = squares[3];
-                    }
-                }
-                else if(i == 6){
-                    if(squares[7] == squares[6] && squares[8] == squares[6]){
-                        // bottom row win
-                        winner = squares[6];
-                    }
-                    if(squares[0] == squares[6] && squares[3] == squares[6]){
-                        // left column win
-                        winner = squares[6];
-                    }
-                    if(squares[4] == squares[6] && squares[2] == squares[6]){
-                        // right diagonal win
-                        winner = squares[6];
-                    }
-                }
             }
         }
         if(winner == 'n' && count == 9) // tie
@@ -140,75 +143,71 @@ public class Game {
         return squares[x] == 'n';
     }
 
-    class OneButtonActionListener implements ActionListener{
+    static class OneButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            move = 0;
         }
     }
-    class TwoButtonActionListener implements ActionListener{
+    static class TwoButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            move = 1;
         }
     }
-    class ThreeButtonActionListener implements ActionListener{
+    static class ThreeButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            move = 2;
         }
     }
-    class FourButtonActionListener implements ActionListener{
+    static class FourButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            move = 3;
         }
     }
-    class FiveButtonActionListener implements ActionListener{
+    static class FiveButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            move = 4;
         }
     }
-    class SixButtonActionListener implements ActionListener{
+    static class SixButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            move = 5;
         }
     }
-    class SevenButtonActionListener implements ActionListener{
+    static class SevenButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            move = 6;
         }
     }
-    class EightButtonActionListener implements ActionListener{
+    static class EightButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            move = 7;
         }
     }
-    class NineButtonActionListener implements ActionListener{
+    static class NineButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            move = 8;
         }
     }
-    class HostButtonActionListener implements ActionListener{
+    static class HostButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
             isHosting = 'y';
-//            user = new Host();
-//            gameStarted = true;
         }
     }
-    class JoinButtonActionListener implements ActionListener{
+    static class JoinButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
 
             isHosting = 'n';
-//            user = new Player();
-//            gameStarted = true;
         }
     }
 
@@ -232,36 +231,32 @@ public class Game {
 
         while (isHosting == 'u') {
             try {
-                sleep(1000);
+                sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-
-
         if (isHosting == 'y'){
+            game.view.waiting();
             game.user = new Host();
         }
         else {
+            game.view.waiting();
             game.user = new Player();
         }
 
 
-        int moveInt = 0;
-        String sMove = "-1";
-        String moveInput;
-        String incomingData = "";
-        StringBuilder incomingDataBuilder = new StringBuilder("");
-        StringBuilder data = new StringBuilder("");
+        String incomingData;
+        StringBuilder incomingDataBuilder;
+        StringBuilder data;
         StringBuilder moveInputBuilder;
 
         while (game.getGameStatus() == 'n') {
-            if((game.user.getIsHost() && game.getCurrentPlayer() != 'x') || (game.user.getIsHost() == false && game.getCurrentPlayer() != 'o')){
+            if((game.user.getIsHost() && game.getCurrentPlayer() != 'x') || (!game.user.getIsHost() && game.getCurrentPlayer() != 'o')){
                 // if not your turn
-                incomingDataBuilder = new StringBuilder("");
+                game.view.waiting();
+                incomingDataBuilder = new StringBuilder();
 
                 System.out.println("Waiting For Other Player...");
                 incomingData = game.user.waitForData();
@@ -276,8 +271,11 @@ public class Game {
 
                 continue;
             }
-            data = new StringBuilder("");
-            moveInputBuilder = new StringBuilder("");
+            // if your turn
+            game.view.updateGame(game.squares, game.getCurrentPlayer(), game.getGameStatus());
+
+            data = new StringBuilder();
+            moveInputBuilder = new StringBuilder();
             moveInputBuilder.append(game.getSquares());
 
             System.out.println("\nTicTacToe\n");
@@ -285,26 +283,23 @@ public class Game {
 
             game.displayGameBoard();
 
-            System.out.println("Enter a number 1 - 9: ");
-            try {
-                sMove = reader.readLine();
-                moveInt = Integer.parseInt(String.valueOf(sMove));
-            } catch (IOException e) {
-                System.out.println("Incorrect Input!");
-                continue;
-            } catch (NumberFormatException e) {
-                System.out.println("Incorrect Input!");
-                continue;
+
+            while(move == -1){
+                try {
+                    sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
-            if (moveInt >= 1 && moveInt <= 9) {
+            if (move >= 0 && move <= 8) {
                 // if valid input
-                if (game.isMoveValid(moveInt - 1)) {
+                if (game.isMoveValid(move)) {
                     // make move
-                    moveInputBuilder.setCharAt(moveInt - 1, game.currentPlayer);
-                    moveInput = moveInputBuilder.toString();
+                    moveInputBuilder.setCharAt(move, game.currentPlayer);
 
-                    game.setSquares(moveInput);
+                    game.setSquares(moveInputBuilder.toString());
+                    move = -1;
                     game.setGameStatus();
 
                     // change turns
@@ -333,17 +328,16 @@ public class Game {
                 else{
                     // square occupied
                     System.out.println("That square is already occupied!\nTry Again!");
-                    continue;
                 }
 
 
             }
             else {
                 System.out.println("Incorrect Input!");
-                continue;
             }
         }
         game.displayGameBoard();
+        game.view.updateGame(game.squares, game.getCurrentPlayer(), game.getGameStatus());
 
         if(game.getGameStatus() == 't'){
             System.out.println("\nThe Game Was a Tie...\n");
