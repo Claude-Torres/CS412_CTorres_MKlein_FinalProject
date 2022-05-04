@@ -23,7 +23,7 @@ public class Host extends User{
 
         } catch (IOException e) {
             System.out.println("Someone is Already Hosting a Game!");
-            exit(1);
+            hasHost = true;
         }
 
     }

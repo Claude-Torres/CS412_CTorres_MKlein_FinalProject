@@ -37,6 +37,46 @@ public class View {
         frame.setVisible(true);
     }
 
+    public void disconnect(){
+        frame.setVisible(false);
+        frame.remove(panel);
+        panel = new JPanel();
+
+        panel.setLayout(null);
+        panel.add(title);
+
+        System.out.println("Setting up disconnect GUI!");
+
+        turn = new JLabel("Other Player Disconnected!");
+        turn.setFont(new Font("Serif", Font.BOLD, 50));
+        Dimension size = turn.getPreferredSize();
+        turn.setBounds(100, 300, size.width + 50, size.height);
+        panel.add(turn);
+
+        frame.getContentPane().add(panel);
+
+        frame.setVisible(true);
+    }
+
+    public void doubleHost(){
+        frame.setVisible(false);
+        frame.remove(panel);
+        panel = new JPanel();
+
+        panel.setLayout(null);
+        panel.add(title);
+
+        turn = new JLabel("Someone is already Hosting!");
+        turn.setFont(new Font("Serif", Font.BOLD, 50));
+        Dimension size = turn.getPreferredSize();
+        turn.setBounds(100, 300, size.width + 50, size.height);
+        panel.add(turn);
+
+        frame.getContentPane().add(panel);
+
+        frame.setVisible(true);
+    }
+
     public void waiting(){
         frame.setVisible(false);
         frame.remove(panel);
@@ -129,6 +169,5 @@ public class View {
     public void setNineButtonActionListener(ActionListener aL){buttons[8].addActionListener(aL);}
 
 }
-
 
 

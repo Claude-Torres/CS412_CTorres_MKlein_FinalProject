@@ -8,6 +8,7 @@ import static java.lang.System.exit;
 public class User{
 
     boolean isHost;
+    boolean hasHost = false;
     public java.net.Socket socket;
     public BufferedReader bufferedReader;
     public PrintWriter printWriter;

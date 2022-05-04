@@ -240,6 +240,17 @@ public class Game {
         if (isHosting == 'y'){
             game.view.waiting();
             game.user = new Host();
+
+            game.view.doubleHost();
+
+            if(game.user.hasHost){
+                try {
+                    sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                exit(-1);
+            }
         }
         else {
             game.view.waiting();
